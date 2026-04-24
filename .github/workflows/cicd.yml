@@ -6,28 +6,38 @@ on:
       - release
       - main
 
+  pull_request:
+    branches:
+      - release
+
 jobs:
 
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: echo "Build OK"
+      - run: echo "BUILD OK"
 
-  deploy_qa:
-    if: github.ref == 'refs/heads/release'
+  qa:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/release'
     runs-on: ubuntu-latest
     needs: build
     environment:
       name: qa
     steps:
-      - run: echo "Deploying to QA"
+      - run: echo "DEPLOY TO QA"
 
-  deploy_prod:
-    if: github.ref == 'refs/heads/main'
+  prod:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     needs: build
     environment:
       name: prod
     steps:
-      - run: echo "Deploying to PROD"
+      - run: echo "DEPLOY TO PROD"
+
+  pr-check:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "PR VALIDATION ONLY"
