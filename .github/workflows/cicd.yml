@@ -1,32 +1,42 @@
-name: CI/CD Pipeline
+name: CI/CD (Release → QA → Prod)
 
 on:
   push:
-    branches: ["feature", "release"]
-  pull_request:
-    branches: ["release/*"]
-  
+    branches:
+      - release
+      - main
+
 jobs:
 
   build:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "Building..."
+      - uses: actions/checkout@v4
+      - run: echo "Build completed"
 
   deploy_qa:
     if: github.ref == 'refs/heads/release'
-    runs-on: ubuntu-latest
     needs: build
+    runs-on: ubuntu-latest
     environment:
       name: qa
     steps:
-      - run: echo "Deploying to QA..."
+      - run: echo "Deploying to QA environment"
+
+  qa_approval_gate:
+    if: github.ref == 'refs/heads/release'
+    needs: deploy_qa
+    runs-on: ubuntu-latest
+    environment:
+      name: qa
+    steps:
+      - run: echo "QA approval required"
 
   deploy_prod:
     if: github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
     needs: build
+    runs-on: ubuntu-latest
     environment:
       name: prod
     steps:
-      - run: echo "Deploying to PROD..."
+      - run: echo "Deploying to PROD"
