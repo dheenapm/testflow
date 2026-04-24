@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - release
+      - main
 
 jobs:
 
@@ -13,6 +14,7 @@ jobs:
       - run: echo "Building..."
 
   deploy_qa:
+    if: github.ref == 'refs/heads/release'
     runs-on: ubuntu-latest
     needs: build
     environment:
@@ -21,8 +23,9 @@ jobs:
       - run: echo "Deploying to QA..."
 
   deploy_prod:
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-    needs: deploy_qa
+    needs: build
     environment:
       name: prod
     steps:
