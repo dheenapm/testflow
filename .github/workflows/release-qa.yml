@@ -1,1 +1,6 @@
+name: Release to QA
 
+on:
+  push:
+    branches:
+      - release
