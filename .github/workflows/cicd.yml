@@ -1,12 +1,10 @@
-name: Test Trigger
+name: Debug Workflow
 
 on:
   push:
-    branches:
-      - release
 
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "Workflow is running"
+      - run: echo "WORKFLOW IS RUNNING"
