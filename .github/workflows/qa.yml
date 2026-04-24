@@ -1,0 +1,24 @@
+name: QA Pipeline
+
+on:
+  push:
+    branches:
+      - release
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: echo "Build step done"
+
+  deploy_qa:
+    runs-on: ubuntu-latest
+    needs: build
+
+    environment:
+      name: qa   # 👈 THIS triggers approval gate
+
+    steps:
+      - run: echo "Deploying to QA..."
