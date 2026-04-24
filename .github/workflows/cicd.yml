@@ -4,29 +4,40 @@ on:
   push:
     branches:
       - release
-      - main
 
 jobs:
 
   build:
+    name: Build Application
     runs-on: ubuntu-latest
     steps:
-      - run: echo "Building..."
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build step
+        run: echo "Building application..."
 
   deploy_qa:
-    if: github.ref == 'refs/heads/release'
+    name: Deploy to QA
     runs-on: ubuntu-latest
     needs: build
-    environment:
-      name: qa
-    steps:
-      - run: echo "Deploying to QA..."
 
+    environment:
+      name: qa   # 👈 THIS triggers approval gate
+
+    steps:
+      - name: Deploy to QA
+        run: echo "Deploying to QA environment..."
+
+  # Optional future step (PROD)
   deploy_prod:
-    if: github.ref == 'refs/heads/main'
+    name: Deploy to Production
     runs-on: ubuntu-latest
-    needs: build
+    needs: deploy_qa
+
     environment:
       name: prod
+
     steps:
-      - run: echo "Deploying to PROD..."
+      - name: Deploy to Production
+        run: echo "Deploying to production..."
