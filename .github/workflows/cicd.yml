@@ -11,27 +11,22 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Build app
-        run: echo "Building application..."
+      - run: echo "Building..."
 
   deploy_qa:
-    name: Deploy to QA
-    runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/release'
+    runs-on: ubuntu-latest
     needs: build
     environment:
       name: qa
     steps:
-      - name: Deploy to QA
-        run: echo "Deploying to QA environment..."
+      - run: echo "Deploying to QA..."
 
   deploy_prod:
-    name: Deploy to Production
-    runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
     needs: build
     environment:
       name: prod
     steps:
-      - name: Deploy to Production
-        run: echo "Deploying to production..."
+      - run: echo "Deploying to PROD..."
