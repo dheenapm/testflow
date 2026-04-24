@@ -1,6 +1,48 @@
-name: Release to QA
+name: Release → QA Flow
 
 on:
   push:
     branches:
       - release
+
+jobs:
+
+  notify:
+    name: Notify QA
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send notification
+        run: echo "Code deployed to QA. Please start testing."
+
+  deploy_to_qa:
+    name: Deploy to QA
+    runs-on: ubuntu-latest
+    needs: notify
+    environment:
+      name: qa-testing   # 👈 requires TESTER approval
+    steps:
+      - name: Deploy step
+        run: echo "Deploying to QA..."
+
+  tester_approval_done:
+    name: Tester Approved
+    runs-on: ubuntu-latest
+    needs: deploy_to_qa
+    steps:
+      - run: echo "Tester approved!"
+
+  release_approval:
+    name: Release Manager Approval
+    runs-on: ubuntu-latest
+    needs: tester_approval_done
+    environment:
+      name: qa-release   # 👈 requires RELEASE MANAGER approval
+    steps:
+      - run: echo "Waiting for release manager approval..."
+
+  done:
+    name: Completed
+    runs-on: ubuntu-latest
+    needs: release_approval
+    steps:
+      - run: echo "All approvals complete. Process done!"
